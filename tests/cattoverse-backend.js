@@ -1,4 +1,5 @@
 const anchor = require("@project-serum/anchor");
+const { SystemProgram } = require("@solana/web3.js");
 
 // describe('cattoverse-backend', () => {
 
@@ -16,11 +17,40 @@ const anchor = require("@project-serum/anchor");
 const main = async () => {
   console.log("🚀 Starting test...");
 
-  anchor.setProvider(anchor.Provider.env());
+  const provider = anchor.Provider.env();
+  anchor.setProvider(provider);
+
+  // Reference to our solana program
   const program = anchor.workspace.CattoverseBackend;
-  const tx = await program.rpc.initialize();
+
+  // Create a base account to start things off
+  const baseAccount = anchor.web3.Keypair.generate();
+
+  const tx = await program.rpc.initialize({
+    accounts: {
+      baseAccount: baseAccount.publicKey,
+      user: provider.wallet.publicKey,
+      systemProgram: SystemProgram.programId,
+    },
+    signers: [baseAccount],
+  });
 
   console.log("Your transaction signature", tx);
+
+  // Fetching data from the account
+  let account = await program.account.baseAccount.fetch(baseAccount.publicKey);
+  console.log("Gif Count", account.totalGifs.toString());
+
+  // Try adding the gif count
+  await program.rpc.addGif({
+    accounts: {
+      baseAccount: baseAccount.publicKey,
+    },
+  });
+
+  // Calling fetch again to get the newest data.
+  account = await program.account.baseAccount.fetch(baseAccount.publicKey);
+  console.log("Gif Count", account.totalGifs.toString());
 };
 
 const runMain = async () => {
