@@ -1,11 +1,11 @@
-[programs.localnet]
-cattoverse_backend = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
+[programs.devnet]
+cattoverse_backend = "5Sd7zzjsxKPZWT3FnYxHprUqNGzNbXhpEwKbyJ7mr9sS"
 
 [registry]
 url = "https://anchor.projectserum.com"
 
 [provider]
-cluster = "localnet"
+cluster = "devnet"
 wallet = "/home/cwkang/.config/solana/id.json"
 
 [scripts]
